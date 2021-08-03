@@ -39,6 +39,7 @@ public class DNA {
             }
         }
         fitness = score / (double) length;
+        fitness = Math.pow(fitness, 2);
     }
     public double getFitness() {
         return fitness;
