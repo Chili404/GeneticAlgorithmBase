@@ -47,8 +47,10 @@ public class DNA {
 
 
     public DNA crossover(DNA parent) {
+        Random rand = new Random();
+        int cutPoint = rand.nextInt(length);
         for(int i = 0; i < length; i++) {
-            if (i > length/2) {
+            if (i > cutPoint) {
                 genes.set(i, parent.genes.get(i));
             }
         }
