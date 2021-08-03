@@ -44,6 +44,12 @@ public class Population {
                 maxFitness = population.get(i).getFitness();
             }
         }
+        //normalize fitness values
+        for(int i = 0; i < popmax; i++) {
+            population.get(i).fitness = population.get(i).getFitness() / totalFitness;
+        }
+
+
         Random rand = new Random();
         ArrayList<DNA> placeholder = new ArrayList<>();
         for(int i = 0; i < popmax; i++) {
@@ -60,17 +66,14 @@ public class Population {
     DNA acceptReject(double totalFitness, double maxFitness) {
         Random rand = new Random();
         //Method1
-
-        while(true) {
-            int index = rand.nextInt(popmax);
-            double potParentFitness = population.get(index).getFitness();
-            double percentOfTotal = potParentFitness / totalFitness;
-
-            double threshold = rand.nextDouble();
-            if(threshold < percentOfTotal) {
-                return population.get(index);
-            }
+        double thresholdValue = rand.nextDouble();
+        int index = 0;
+        while(thresholdValue > 0) {
+            thresholdValue -= population.get(index).getFitness();
+            index++;
         }
+        index--;
+        return population.get(index);
 
         //Method2
         /*
