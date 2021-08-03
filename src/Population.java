@@ -33,38 +33,56 @@ public class Population {
             population.get(i).calcFitness(target);
         }
     }
-    void naturalSelection() {
-        ArrayList<DNA> matingPool = new ArrayList<>();
-        double maxFitness = 0;
+
+    void generateNext() {
+
+        double totalFitness = 0;
+        double maxFitness = 0.0;
         for(int i = 0; i < popmax; i++) {
+            totalFitness += population.get(i).getFitness();
             if(population.get(i).getFitness() > maxFitness) {
                 maxFitness = population.get(i).getFitness();
             }
         }
-
-        /*Normalize the fitness value and based on that value add
-        it to the mating pool x time*/
-        for(int i = 0; i < popmax; i++) {
-            double normalizedFitness = population.get(i).getFitness() / maxFitness;
-            int n = (int) (normalizedFitness * 100);
-            for(int j = 0; j < n; j++) {
-                matingPool.add(population.get(i));
-            }
-        }
-        this.matingPool = matingPool;
-    }
-    void generateNext() {
         Random rand = new Random();
+        ArrayList<DNA> placeholder = new ArrayList<>();
         for(int i = 0; i < popmax; i++) {
-            int a = rand.nextInt(matingPool.size());
-            int b = rand.nextInt(matingPool.size());
-            DNA parentA = matingPool.get(a);
-            DNA parentB = matingPool.get(b);
+            DNA parentA = acceptReject(totalFitness, maxFitness);
+            DNA parentB = acceptReject(totalFitness, maxFitness);
             DNA child = parentA.crossover(parentB);
             child.mutate(mutationRate);
-            population.set(i, child);
+            placeholder.add(child);
         }
+        population = placeholder;
         generations++;
+    }
+
+    DNA acceptReject(double totalFitness, double maxFitness) {
+        Random rand = new Random();
+        //Method1
+
+        while(true) {
+            int index = rand.nextInt(popmax);
+            double potParentFitness = population.get(index).getFitness();
+            double percentOfTotal = potParentFitness / totalFitness;
+
+            double threshold = rand.nextDouble();
+            if(threshold < percentOfTotal) {
+                return population.get(index);
+            }
+        }
+
+        //Method2
+        /*
+        while(true) {
+            int index = rand.nextInt(popmax);
+            DNA partner = population.get(index);
+            double r = rand.nextDouble() * maxFitness;
+            if(r < partner.fitness) {
+                return partner;
+            }
+
+        }*/
     }
 
     void evaluate() {

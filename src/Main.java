@@ -4,12 +4,11 @@ public class Main {
 
         System.out.println("Hello");
         String target = "To be or not to be";
-        double mutationRate = 0.005;
-        int popmax = 1000;
+        double mutationRate = 0.01;
+        int popmax = 200;
 
         Population pop = new Population(target, mutationRate, popmax);
         while(pop.isFinished() != true) {
-            pop.naturalSelection();
             pop.generateNext();
             pop.calcFitness();
             pop.evaluate();
